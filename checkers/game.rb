@@ -39,8 +39,6 @@ class Game
       puts "Enter piece to move: "
       input = gets.chomp
 
-      raise InvalidInputError if input.length > 2 || input.match(/[0-7][0-7]/).nil?
-
       input_pos = parse_pos(input)
       @start_piece = @board[input_pos]
 
@@ -66,6 +64,10 @@ class Game
 
       input_seq = parse_seq(input)
       @start_piece.perform_moves(input_seq)
+
+    rescue InvalidInputError
+      puts "invalid input"
+      retry
     rescue InvalidMoveError
       puts "invalid move"
       retry
@@ -73,6 +75,9 @@ class Game
   end
 
   def parse_pos(pos)
+    #turns "21" into [2, 1]
+    raise InvalidInputError if pos.length > 2 || pos.match(/[0-7][0-7]/).nil?
+
     if pos.include?(",")
       pos.gsub(" ", "").split(",").map { |n| n.to_i }
     else
